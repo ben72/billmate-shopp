@@ -1,0 +1,58 @@
+                                                                     
+                                                                     
+                                                                     
+                                             
+=== SHOPP BILLMATE GATEWAY ===
+
+By eFinance Nordic AB - http://efinance.se/
+
+Documentation with instructions on how to setup the plugin can be found at https://efinance.se/plugins/shopp/Instruktionsmanual_Shopp_Billmate_Plugin.pdf
+
+
+== DESCRIPTION ==
+
+Billmate Gateway is a plugin that extends Shopp, allowing your customers to get their products first and pay by invoice to Billmate later (http://www.billmate.com/). This plugin utilizes Billmate Invoice, Billmate Card and Billmate Part Payment (Standard Integration type).
+
+When the order is passed to Billmate a credit record of the customer is made. If the check turns out all right, Billmate creates an invoice in their system. After you (as the merchant) completes the order in Shopp, you need to log in to Billmate to approve/send the invoice.
+
+Billmate is a great payment alternative for merchants and customers in Sweden.
+
+
+== IMPORTANT NOTE ==
+
+This plugin does not currently support Campaigns or Mobile payments.
+
+The plugin only works if the currency is set to Swedish Krona and the Base country is set to Sweden.
+
+INVOICE FEE HANDLING
+Since of version 1.12 the Invoice Fee for Billmate Invoice are added as a simple (hidden) product. This is to match order total in Shopp and your billmate part payment (in earlier versions the invoice fee only were added to Billmate).
+
+To create a Invoice fee product: 
+- Add a simple (hidden) product. Mark it as a taxable product.
+- Go to the Billmate Gateway settings page and add the ID of the Invoice Fee product. The ID can be found by hovering the Invoice Fee product on the Products page in Shopp.
+
+
+
+== INSTALLATION	 ==
+
+Read following information to install these plugins
+
+You will find three plugins billmateInvoice, BillmateCardpay, BillmatePartpayment
+
+extract zip file and upload BillmateCore directory in following directory
+
+wordpress/wp-content/plugins/shopp/
+
+and then upload BillmateInvoice, BillmatePartpayment, BillmateCardpay directory in following directory
+
+wordpress/wp-content/plugins/shopp/gateways
+
+then go to wordpress admin 
+shopp -> settings-> payment gateway
+
+then you can enable disable these plugins
+
+
+Note: BillmateCore is library of billmate plugins its not standalone plugin
+2) you must verify that wordpress/wp-content/plugins/shopp/gateways contains only folders if find any php file then rename to other extention(.txt) if its not working gateway
+   because default shopp contains a index.php in every folder so if you any problem then you must rename index.php in wordpress/wp-content/plugins/shopp/gateways location

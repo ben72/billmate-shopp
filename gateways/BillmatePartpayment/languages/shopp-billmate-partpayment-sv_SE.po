@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Billmate Part Payment - Pay from"
+msgstr "Billmate delbetalning <br/>Betala från"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Billmate Partpayment is not cofigured"
+msgstr "Billmate delbetalning är inte konfigurerad"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Enter your Billmate secret key."
+msgstr "Skriv in din hemliga <b>billmate</b> nyckel"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Enter your EID."
+msgstr "Skriv in din <b>billmate</b> ID."
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Invalid personal number"
+msgstr "Ogiltigt person-/organisationsnummer"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Invoice Information"
+msgstr "Fakturainformation"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid ""
+"It is not possible to pay with this method. Choose a different payment "
+"method or try to use a different personal number"
+msgstr ""
+"Kan inte processa <b>billmate</b> betalningen. Försök igen eller välj annan "
+"betalingsmetod. <br>Felkod:"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Personal Number"
+msgstr "Person-/organisationsnummer"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Phone"
+msgstr "Mobilnummer"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Please enter personal number"
+msgstr "Skriv in person-/organisationsnummer"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Please select payment plan"
+msgstr "Välj delbetalningsplan"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Terms of invoice"
+msgstr "Villkor för faktura"
+
+#. Text in echo
+#: BillmatePartpayment.php:1
+msgid "Unable to fetch Billmate Pclasses"
+msgstr "Kunde inte hämta <b>billmate</b> Pclasses"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "month"
+msgstr "månad"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "per month"
+msgstr "per månad"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "My email address %s is correct and can be used for invoicing purposes."
+msgstr "Min e-postadress %s är korrekt och får användas för fakturering."
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Your billing adress is wrong"
+msgstr ""
+"Din angivna adress kan inte användas. Köp mot faktura kan bara faktureras "
+"och levereras till din bokföringsadress."
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Correct Address is :"
+msgstr "Din bokföringsadress:"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid ""
+"Click Yes to continue with new address, No to choose other payment method"
+msgstr ""
+"Klicka på Ja för att fortsätta med den nya adressen, Nej för att välja ett "
+"annat betalningssätt"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "Yes"
+msgstr "Ja"
+
+#. Text in function
+#: BillmatePartpayment.php:1
+msgid "No"
+msgstr "Nej"
+
+msgid "Enable test mode"
+msgstr "Aktivera testläge"
+
+msgid "Billmate Partpayment not available in selected country country code"
+msgstr "Billmate delbetalning inte tillgänglig i valda landet landskod"
+
+msgid "Your Billing address is wrong."
+msgstr "Din angivna adress kan inte användas. Köp mot faktura kan bara faktureras och levereras till din bokföringsadress."
+
+msgid "Discount"
+msgstr "Rabatt"
+
+msgid "discount"
+msgstr "rabatt"

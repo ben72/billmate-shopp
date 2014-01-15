@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.5\n"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Authentication"
+msgstr "Reservera belopp"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Authentication Method"
+msgstr "Betalningsmetod"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Enable test mode"
+msgstr "Aktivera testläge"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Enter your Merchant ID."
+msgstr "Skriv in din <b>billmate</b> ID."
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Enter your Secret."
+msgstr "Skriv in din hemliga <b>billmate</b> nyckel."
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Error Recieved from Billmate Bank:"
+msgstr "Fel från <b>billmate</b> kort:"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Sale"
+msgstr "Debitera belopp direkt"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Shipping"
+msgstr "Frakt"
+
+#. Text in function
+#: BillmateBank.php:1
+msgid "Unable to process billmate try again <br/>Error:"
+msgstr ""
+"Köpet kunde inte genomföras, försök igen eller välj annan betalningsmetod. "
+"<br/>Felkod:"
+
+msgid "Enable Display Name"
+msgstr "Visa namn i betalfönster"
+
+msgid "Enable 3D Secure"
+msgstr "Aktivera 3D secure"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nej"
+
+msgid "Billmate Invoice activated for customers in these countries"
+msgstr "Billmate Faktura aktiverad för kunder i dessa länder"
+
+msgid "Billmate Partpayment activated for customers in these countries"
+msgstr "Billmate delbetalning aktiverat för kunder i dessa länder"
+
+msgid "pay by Bank Transfer"
+msgstr "Betala med banköverföring."
+
+
+msgid "Discount"
+msgstr "Rabatt"
+
+msgid "discount"
+msgstr "rabatt"
