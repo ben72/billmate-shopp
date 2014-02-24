@@ -15,7 +15,7 @@ if(!file_exists( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php" )){
     die("Billmate Core is Required to enable this gateway");
 }
 include_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php");
-
+require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
 load_plugin_textdomain('shopp-billmate-partpayment', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 
 class BillmatePartpayment extends GatewayFramework implements GatewayModule {
@@ -205,43 +205,50 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 
         if( $addressNotMatched || $shippingAndBilling ){
             if( empty($this->Order->overritedefaultaddress2) || !$this->Order->overritedefaultaddress2 ){
-	            $html = '<p><b>'.__('Correct Address is :','shopp-billmate-partpayment').'</b></p>'.($addr[0][0]).' '.$addr[0][1].'<br>'.$addr[0][2].'<br>'.$addr[0][3].' '.$addr[0][4].'<div style="padding: 17px 0px;"> <i>'.__('Click Yes to continue with new address, No to choose other payment method','shopp-billmate-partpayment').'</i></div> <input type="button" value="'.__('Yes','shopp-billmate-partpayment').'" onclick="updateAddress();" class="button"/> <input type="button" value="'.__('No','shopp-billmate-partpayment').'" onclick="closefunc(this)" class="button" style="float:right" />';
+	            $html = '<p style="margin:0px;"><b>'.__('Correct Address is :','shopp-billmate-partpayment').'</b></p>'.($addr[0][0]).' '.$addr[0][1].'<br>'.$addr[0][2].'<br>'.$addr[0][3].' '.$addr[0][4].'<div style="padding: 17px 0px;"> <i>'.__('Click Yes to continue with new address, No to choose other payment method','shopp-billmate-partpayment').'</i></div> <input type="button" value="'.__('Yes','shopp-billmate-partpayment').'" style="background:#1DA9E7" onclick="updateAddress();" class="button"/> <input style="background:#1DA9E7" type="button" value="'.__('No','shopp-billmate-partpayment').'" onclick="closefunc(this)" class="button" style="float:right" />';
 	            $code = '<style type="text/css">
 .checkout-heading {
-    background: none repeat scroll 0 0 #F8F8F8;
-    border: 1px solid #DBDEE1;
-    color: #555555;
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    padding: 8px;
+    background: none repeat scroll 0 0 #F8F8F8!important;
+    border: 1px solid #DBDEE1!important;
+    color: #555555!important;
+    font-size: 13px!important;
+    font-weight: bold!important;
+    margin-bottom: 15px!important;
+    padding: 8px!important;
 }
 #cboxClose{
  display:none!important;
  visibility:hidden!important;
 }
-.button:hover{
-    background:#0B6187!important;
+#divOverlay table td, #divOverlay table th{
+	padding:0px!important;
 }
-
+#divOverlay table td, #divOverlay table th, #divOverlay table{
+	border:0px!important;
+}
+.button:hover{
+    background:#444444!important;
+}
+#divOverlay *{
+	text-shadow:none!important;
+}
 .button {
-    background-color: #1DA9E7;
-    border: 0 none;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: 2px 2px 2px 1px #EAEAEA;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-family: arial;
+    border: 0 none!important;
+    border-radius: 8px!important;
+    box-shadow: 2px 2px 2px 1px #EAEAEA!important;
+    color: #FFFFFF!important;
+    cursor: pointer!important;
+    font-family: arial!important;
     font-size: 14px!important;
-    font-weight: bold;
-    padding: 3px 17px;
+    font-weight: bold!important;
+    padding: 3px 17px!important;
 }
 #cboxContent{
     margin:0px!important;
 }
 .billmate_partpayment a{
-    color:blue;
-    cursor:pointer;
+    color:blue!important;
+    cursor:pointer!important;
 }
 	            </style><script type="text/javascript">
 	            jQuery(document).ready(function(){
@@ -872,6 +879,31 @@ jQuery(document).ready(function(){
 			'multiselect' => 'multiselect',
 			'selected' => $this->settings['avail_country'],
 		),$available);
+
+		$content = file_get_contents(dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json');
+		$data    = json_decode($content );
+		
+		$str = array('<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">');
+		$str[] = '<tr><th style="border:1px solid">Sr.</th><th style="border:1px solid">Description</th><th style="border:1px solid">Months</th><th style="border:1px solid">Start fee</th><th style="border:1px solid">Invoice fee</th><th style="border:1px solid">Interest</th><th style="border:1px solid">Min Total</th><th style="border:1px solid">Country</th><th style="border:1px solid">Type</th><th style="border:1px solid">Expiry</th></tr>';
+		$serial = 1;
+		foreach ($data as $pclassobj) {                
+            $pclass = (array)$pclassobj;
+			$str2 = array('<tr style="background:#fff;"><td style="border:1px solid;">'.$serial.'</td>');
+			foreach( $pclass[0] as $key => $col ){
+				if( $key != 'pclassid' )
+				$str2[] = '<td style="border:1px solid">'.$col.'</td>';
+			}
+			$str2[] = '</tr>';
+			$str[] = implode('', $str2 );
+			$serial++;
+		}
+		$str[] = '</table>';
+		$content = '<div style="background-color: #dfdfdf;width: auto;z-index: 99999;padding: 0px;border: 13px solid grey;">'.implode('', $str ).'</div>';
+		$this->ui->p(0,array(
+			'name' => 'pclasses',
+			'label' => __('Pclasses','Shopp'),
+			'content' => $content
+		));
 	}
 
 } // END class BillmateInvoice

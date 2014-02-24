@@ -13,6 +13,7 @@
  * $Id: BillmateInvoice.php 1390 2010-09-27 18:43:12Z jdillick $
  **/
 include_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php");
+require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
 load_plugin_textdomain('shopp-billmate-invoice', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 
 class BillmateInvoice extends GatewayFramework implements GatewayModule {
@@ -222,36 +223,44 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 		    !isEqual($Shipping->country, $Billing->country) ;
         if( $addressNotMatched || $shippingAndBilling ){
             if( empty($this->Order->overritedefaultaddress) || !$this->Order->overritedefaultaddress ){
-	            $html = '<p><b>'.__('Correct Address is :','shopp-billmate-invoice').': </b></p>'.($addr[0][0]).' '.$addr[0][1].'<br>'.$addr[0][2].'<br>'.$addr[0][3].' '.$addr[0][4].'<div style="padding: 17px 0px;"> <i>'.__('Click Yes to continue with new address, No to choose other payment method','shopp-billmate-invoice').'</i></div> <input type="button" value="'.__('Yes','shopp-billmate-invoice').'" onclick="updateAddress();" class="button"/> <input type="button" value="'.__('No','shopp-billmate-invoice').'" onclick="closefunc(this);window.location.reload();" class="button" style="float:right" />';
+	            $html = '<p style="margin:0px!important;"><b>'.__('Correct Address is :','shopp-billmate-invoice').': </b></p>'.($addr[0][0]).' '.$addr[0][1].'<br>'.$addr[0][2].'<br>'.$addr[0][3].' '.$addr[0][4].'<div style="padding: 17px 0px;"> <i>'.__('Click Yes to continue with new address, No to choose other payment method','shopp-billmate-invoice').'</i></div> <input style="background:#1DA9E7" type="button" value="'.__('Yes','shopp-billmate-invoice').'" onclick="updateAddress();" class="button"/> <input style="background:#1DA9E7" type="button" value="'.__('No','shopp-billmate-invoice').'" onclick="closefunc(this);window.location.reload();" class="button" style="float:right" />';
 	            $code = '<style type="text/css">
 .checkout-heading {
-    background: none repeat scroll 0 0 #F8F8F8;
-    border: 1px solid #DBDEE1;
-    color: #555555;
-    font-size: 13px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    padding: 8px;
+    background: none repeat scroll 0 0 #F8F8F8!important;
+    border: 1px solid #DBDEE1!important;
+    color: #555555!important;
+    font-size: 13px!important;
+    font-weight: bold!important;
+    margin-bottom: 15px!important;
+    padding: 8px!important;
 }
 #cboxClose{
  display:none!important;
  visibility:hidden!important;
 }
 .button:hover{
-    background:#0B6187!important;
+    background:#444444!important;
+}
+#divOverlay *{
+	text-shadow:none!important;
+}
+#divOverlay table td, #divOverlay table th{
+	padding:0px!important;
+}
+#divOverlay table td, #divOverlay table th, #divOverlay table{
+	border:0px!important;
 }
 
 .button {
-    background-color: #1DA9E7;
-    border: 0 none;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: 2px 2px 2px 1px #EAEAEA;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-family: arial;
+    border: 0 none!important;
+    border-radius: 8px!important;
+    box-shadow: 2px 2px 2px 1px #EAEAEA!important;
+    color: #FFFFFF!important;
+    cursor: pointer!important;
+    font-family: arial!important;
     font-size: 14px!important;
-    font-weight: bold;
-    padding: 3px 17px;
+    font-weight: bold!important;
+    padding: 3px 17px!important;
 }
 #cboxContent{
     margin:0px!important;

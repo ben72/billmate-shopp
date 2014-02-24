@@ -12,10 +12,12 @@
  * $Id: BillmateCardpay.php $
  **/
  
+require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
 require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
 include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
 include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 load_plugin_textdomain('shopp-billmate-cardpay', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 class BillmateCardpay extends GatewayFramework implements GatewayModule {
 
@@ -184,8 +186,7 @@ jQuery(document).ready(function(){
         $mac_str = $_['accept_url'] . $_['amount'] . $_['callback_url'] . $_['cancel_url'] . $_['capture_now'] . $_['currency'] . $_['do_3d_secure'] . $_['language'] . $_['merchant_id'] . $_['order_id'] . $_['pay_method'] . $_['prompt_name_entry'] . $_['return_method'] . $secret;
         
         $mac = hash ( "sha256", $mac_str );
-
-		billmate_log_data($_, $this->settings['merchantid'], 'Cardpay Hidden form');
+		unset($_SESSION['card_invoice_called'], $_SESSION['card_invoice_called_inv']);
 		$this->billmate_transaction( true );
 		$_['mac']					= $mac;
 
@@ -450,7 +451,12 @@ EOD;
 		if( $add_order ){
 			return $k->AddOrder($pno,$ship_address,$bill_address,$goods_list,$transaction);
 		}
-		$result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
+		
+		if(!isset($_SESSION['card_invoice_called']) || $_SESSION['card_invoice_called'] == false){ 
+			$result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
+		}else{
+			$result1[0] = $_SESSION['card_invoice_called_inv'];
+		}
 		if(!is_array($result1))
 		{   
 	        new ShoppError( __('Unable to process billmate try again <br/>Error:', 'shopp-billmate-cardpay').utf8_encode($result1), 2);
