@@ -44,7 +44,7 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 			$pno = '';
 			
 			$eid  = (int)$this->settings['merchantid'] ;
-			$key = (float)$this->settings['secretkey'];
+			$key = $this->settings['secretkey'];
 
 
 			$ssl = true;
@@ -122,7 +122,7 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 		$phone = $this->Order->billmatephone;
 		
         $eid  = (int)$this->settings['eid'] ;
-        $key = (float)$this->settings['secretkey'];
+        $key = $this->settings['secretkey'];
 
 		$ssl = true;
 		$debug = false;
@@ -472,7 +472,7 @@ jQuery(document).ready(function(){
 		$phone = $this->Order->billmatephone;
 		
         $eid  = (int)$this->settings['eid'] ;
-        $key = (float)$this->settings['secretkey'];
+        $key = $this->settings['secretkey'];
 
 
 		$ssl = true;
@@ -563,7 +563,7 @@ jQuery(document).ready(function(){
 			        'artno'    => $item->product,
 			        'title'    => $item->name,
 			        'price'    => round($item->unitprice*100,0),
-			        'vat'      => (float)round($item->taxrate*100,0),
+			        'vat'      => round($item->taxrate*100,0),
 			        'discount' => 0.0,
 			        'flags'    => $flag,
 		        )
@@ -580,8 +580,8 @@ jQuery(document).ready(function(){
 			        'artno'    => __('discount','shopp-billmate-invoice'),
 			        'title'    => __('Discount','shopp-billmate-invoice'),
 			        'price'    => -1 * abs( round($this->Order->Cart->Totals->discount*100,0) ),
-			        'vat'      => (float) $taxrate*100,
-			        'discount' => (float)0,
+			        'vat'      =>  $taxrate*100,
+			        'discount' => 0,
 			        'flags'    => $flag,
 		        )
 	        );
@@ -597,7 +597,7 @@ jQuery(document).ready(function(){
 			        'artno'    => __('Shipping','shopp-billmate-invoice'),
 			        'title'    => __('Shipping','shopp-billmate-invoice'),
 			        'price'    => round($totalAmt*100,0),
-			        'vat'      => (float)$taxrate*100,
+			        'vat'      => $taxrate*100,
 			        'discount' => 0,
 			        'flags'    => 8,
 		        )
@@ -622,7 +622,7 @@ jQuery(document).ready(function(){
 			"sid"=>array("time"=>microtime(true)),
 			"extraInfo"=>array(array("cust_no"=>(string)$order_info['customer_id']))
 		);
-		$result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
+		$result1 = $k->AddInvoice($pno,$bill_address,$ship_address,$goods_list,$transaction);
 		//shopp_rmv_cart_item($this->settings['invoice_fee']);
 		if(!is_array($result1))
 		{   

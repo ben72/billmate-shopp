@@ -158,7 +158,7 @@ jQuery(document).ready(function(){
 			$pno = '';
 			
 			$eid  = (int)$this->settings['merchantid'] ;
-			$key = (float)$this->settings['banksecret'];
+			$key = $this->settings['banksecret'];
 
 
 			$ssl = true;
@@ -285,7 +285,7 @@ EOD;
 		$pno = '';
 		
         $eid  = (int)$this->settings['merchantid'] ;
-        $key = (float)$this->settings['banksecret'];
+        $key = $this->settings['banksecret'];
 
 
 		$ssl = true;
@@ -436,10 +436,10 @@ EOD;
 		$transaction["extraInfo"][0]["status"] = 'Paid';
 		
 		if( $add_order ){
-			return $k->AddOrder($pno,$ship_address,$bill_address,$goods_list,$transaction);
+			return $k->AddOrder($pno,$bill_address,$ship_address,$goods_list,$transaction);
 		}
 		if(!isset($_SESSION['bank_invoice_called']) || $_SESSION['bank_invoice_called'] == false){ 
-			$result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
+			$result1 = $k->AddInvoice($pno,$bill_address,$ship_address,$goods_list,$transaction);
 		}else{
 			$result1[0] = $_SESSION['bank_invoice_called_inv'];
 		}

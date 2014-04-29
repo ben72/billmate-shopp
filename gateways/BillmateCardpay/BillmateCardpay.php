@@ -238,7 +238,7 @@ EOD;
 			$pno = '';
 			
 			$eid  = (int)$this->settings['merchantid'] ;
-			$key = (float)$this->settings['cardpaysecret'];
+			$key = $this->settings['cardpaysecret'];
 
 
 			$ssl = true;
@@ -293,7 +293,7 @@ EOD;
 		$pno = '';
 		
         $eid  = (int)$this->settings['merchantid'] ;
-        $key = (float)$this->settings['cardpaysecret'];
+        $key = $this->settings['cardpaysecret'];
 
 
 		$ssl = true;
@@ -449,11 +449,11 @@ EOD;
 		if(!empty($this->Order->capture) && $this->Order->capture == 'YES') $transaction["extraInfo"][0]["status"] = 'Paid';
 		
 		if( $add_order ){
-			return $k->AddOrder($pno,$ship_address,$bill_address,$goods_list,$transaction);
+			return $k->AddOrder($pno,$bill_address,$ship_address,$goods_list,$transaction);
 		}
 		
 		if(!isset($_SESSION['card_invoice_called']) || $_SESSION['card_invoice_called'] == false){ 
-			$result1 = $k->AddInvoice($pno,$ship_address,$bill_address,$goods_list,$transaction);
+			$result1 = $k->AddInvoice($pno,$bill_address,$ship_address,$goods_list,$transaction);
 		}else{
 			$result1[0] = $_SESSION['card_invoice_called_inv'];
 		}
