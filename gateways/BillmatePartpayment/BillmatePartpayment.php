@@ -17,7 +17,6 @@ if(!file_exists( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php" )){
 include_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php");
 require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
 load_plugin_textdomain('shopp-billmate-partpayment', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
-
 class BillmatePartpayment extends GatewayFramework implements GatewayModule {
     var $countries = array(209 =>'sweden', 73=> 'finland',59=> 'denmark', 164 => 'norway', 81 => 'germany' );
 	var $secure = false;
@@ -34,6 +33,7 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 		add_action('wp_head', array(&$this, 'billmate_load_styles'), 6 );
     	add_action( 'wp_enqueue_scripts', array(&$this, 'billmate_load_scripts'), 6 );
 		add_action('shopp_order_success', array(&$this,'success') );
+		$this->actions();
 	}
 	function success($Purchase){
 		if(  $Purchase->id ){
@@ -45,8 +45,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			
 			$eid  = (int)$this->settings['merchantid'] ;
 			$key = $this->settings['secretkey'];
-
-
 			$ssl = true;
 			$debug = false;
 			$k = new BillMate($eid,$key,$ssl,$debug);
@@ -54,8 +52,8 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			$k->UpdateOrderNo($rno, $Purchase->id);
 		}
 	}
-
 	function actions () {
+		
         add_action('shopp_save_payment_settings', array(&$this, 'fetchpclasses') );
 		add_action('shopp_init_confirmation',array(&$this,'confirmation'));
 		add_action('shopp_process_checkout', array(&$this,'checkout'),9);
@@ -66,7 +64,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 		$OrderTotals = $Order->Cart->Totals;
 		$Billing = $Order->Billing;
 		$Paymethod = $Order->paymethod();
-
 		shopp_add_order_event($Event->order,'authed',array(
 			'txnid' => time(),
 			'amount' => $OrderTotals->total,
@@ -77,7 +74,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			'payid' => $Billing->card
 		));
 	}
-
 	function capture ($Event) {
 		shopp_add_order_event($Event->order,'captured',array(
 			'txnid' => time(),			// Transaction ID of the CAPTURE event
@@ -86,7 +82,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			'gateway' => $this->module	// Gateway handler name (module name from @subpackage)
 		));
 	}
-
 	function refund ($Event) {
 		shopp_add_order_event($Event->order,'refunded',array(
 			'txnid' => time(),			// Transaction ID for the REFUND event
@@ -101,28 +96,22 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			'gateway' => $this->module		// Gateway handler name (module name from @subpackage)
 		));	
 	}
-
 	function confirmation () {
 	    global $Shopp;
-
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
-
 		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
 		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
 		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
 		
 		$pno = $this->Order->partpaymentpno;
-
 		$phone = $this->Order->partpaymentphone;
 		
         $eid  = (int)$this->settings['eid'] ;
         $key = $this->settings['secretkey'];
-
 		$ssl = true;
 		$debug = false;
 		$k = new BillMate($eid,$key,$ssl,$debug, $this->settings['testmode'] == 'on');
-
 		$Customer = $this->Order->Customer;
 		$Billing = $this->Order->Billing;
 		$Shipping = $this->Order->Shipping;
@@ -134,7 +123,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
 			die;
 		}
-
 		$country_to_currency = array(
 			'NO' => 'NOK',
 			'SE' => 'SEK',
@@ -145,7 +133,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 		);
 		try {
 			$addr = $k->GetAddress($pno);
-
 			if( empty( $addr[0] ) ){
 		        new ShoppError( __('Invalid personal number', 'shopp-billmate-partpayment'), 2);
 		        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
@@ -154,7 +141,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			foreach( $addr[0] as $key => $col ){
 				$addr[0][$key] = utf8_encode($col);
 			}
-
 			if(isset($addr['error'])){
 		        new ShoppError( __('Invalid personal number', 'shopp-billmate-partpayment'), 2);
 		        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
@@ -165,7 +151,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
             die;
 		}
-
     	$Customer = $this->Order->Customer;
 		$Billing =  $Shopp->Shopping->data->Order->Billing;
 		$Shipping = $Shopp->Shopping->data->Order->Shipping;
@@ -185,16 +170,13 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
             $apifirst = explode(' ', $addr[0][0] );
             $apilast  = explode(' ', $addr[0][1] );
         }
-
         $matchedFirst = array_intersect($apifirst, $firstArr );
         $matchedLast  = array_intersect($apilast, $lastArr );
         $apiMatchedName   = !empty($matchedFirst) && !empty($matchedLast);
-
 		$addressNotMatched = !isEqual($addr[0][2], $Billing->address ) ||
 		    !isEqual($addr[0][3], $Billing->postcode) || 
 		    !isEqual($addr[0][4], $Billing->city) || 
 		    !isEqual($addr[0][5], BillmateCountry::fromCode($Billing->country));
-
         $shippingAndBilling =  !$apiMatchedName ||
 		    !isEqual($Shipping->address, $Billing->address ) ||
 		    !isEqual($Shipping->postcode, $Billing->postcode) || 
@@ -202,7 +184,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 		    !isEqual($Shipping->country, $Billing->country) ;
 		
 		
-
         if( $addressNotMatched || $shippingAndBilling ){
             if( empty($this->Order->overritedefaultaddress2) || !$this->Order->overritedefaultaddress2 ){
 	            $html = '<p style="margin:0px;"><b>'.__('Correct Address is :','shopp-billmate-partpayment').'</b></p>'.($addr[0][0]).' '.$addr[0][1].'<br>'.$addr[0][2].'<br>'.$addr[0][3].' '.$addr[0][4].'<div style="padding: 17px 0px;"> <i>'.__('Click Yes to continue with new address, No to choose other payment method','shopp-billmate-partpayment').'</i></div> <input type="button" value="'.__('Yes','shopp-billmate-partpayment').'" style="background:#1DA9E7" onclick="updateAddress();" class="button"/> <input style="background:#1DA9E7" type="button" value="'.__('No','shopp-billmate-partpayment').'" onclick="closefunc(this)" class="button" style="float:right" />';
@@ -281,7 +262,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
                 $Shipping->postcode = $addr[0][3];
                 $Shipping->city     = $addr[0][4];
                 $Shipping->country  = BillmateCountry::getCode($addr[0][5]);
-
                 $Billing->address  = $addr[0][2];
                 $Billing->postcode = $addr[0][3];
                 $Billing->city     = $addr[0][4];
@@ -289,33 +269,30 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
                 
                 $Shopp->Shopping->data->Order->Billing  =  $Billing ;
                 $Shopp->Shopping->data->Order->Shipping =  $Shipping ;
-
-
 	        }
         }
 		return true;
 	}
     function correct_lang_billmate(&$item, $index){
-        $keys = array('pclassid', 'description','months', 'start_fee','invoice_fee','interest', 'mintotal', 'country', 'Type', 'expiry' );
+        $keys = array('pclassid', 'description','months', 'start_fee','invoice_fee','interest', 'mintotal', 'country', 'Type', 'expiry', 'maxtotal' );
         $item[1] = utf8_encode($item[1]);
         $item = array_combine( $keys, $item );
         $item['start_fee'] = $item['start_fee'] / 100;
         $item['invoice_fee'] = $item['invoice_fee'] / 100;
         $item['interest'] = $item['interest'] / 100;
         $item['mintotal'] = $item['mintotal'] / 100;
+        $item['maxtotal'] = $item['maxtotal'] / 100;
     }
 	function fetchpclasses(){
 	    
 	    $eid    = (int)$this->settings['eid'];
 	    $secret = $this->settings['secretkey'];
-
+		
 	    $ssl = true;
 	    $debug = false;
-
 		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
 		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
 		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
-
         $k = new BillMate($eid,$secret,$ssl,$debug, $this->settings['testmode'] == 'on');
         $result = array();
         foreach($this->countries as $countryid => $countryname ){
@@ -352,7 +329,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	/* Handle the checkout form */
 	function checkout () {
         $this->isPermitted();
-
         if(empty($_POST['pclass'])){
 	        new ShoppError( __('Please select payment plan', 'shopp-billmate-partpayment'), 2);
 	        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
@@ -363,7 +339,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'checkout').'";</script>';
             die;
         }
-
 		if( version_compare(SHOPP_VERSION, '1.1.9', '<=')){
 			$this->Order->Billing->cardtype = "Billmate PartPayment";
 			$this->Order->confirm = true;
@@ -411,7 +386,6 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
  				$amount = NULL;
                 break;
         }
-
         return $amount;
     }
     function calcPayment($data, $total){
@@ -426,29 +400,22 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 			if (!in_array($pclass['Type'], array(0, 1, 3))) {
 				continue;
 			}
-
 			if ($pclass['Type'] == 2) {
 				$monthly_cost = -1;
 			} else {
-				if ($total < $pclass['mintotal']) {
+				if ($total < $pclass['mintotal'] || ($total > $pclass['maxtotal'] && $pclass['maxtotal'] > 0) ) {
 					continue;
 				}
-
 				if ($pclass['Type'] == 3) {
 					continue;
 				} else {
 					$sum = $total;
-
 					$lowest_payment = $this->getLowestPaymentAccount($Billing->country);
 					$monthly_cost = 0;
-
 					$monthly_fee = $pclass['invoice_fee'];
 					$start_fee = $pclass['start_fee'];
-
 					$sum += $start_fee;
-
 					$base = ($pclass['Type'] == 1);
-
 					$minimum_payment = ($pclass['Type'] === 1) ? $this->getLowestPaymentAccount($Billing->country) : 0;
  
 					if ($pclass['months'] == 0) {
@@ -459,46 +426,36 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 						$interest = $pclass['interest'] / (100.0 * 12);
 						$payment = $sum * $interest / (1 - pow((1 + $interest), -$pclass['months']));
 					}
-
 					$payment += $monthly_fee;
-
 					$balance = $sum;
 					$pay_data = array();
-
 					$months = $pclass['months'];
 					
 					while (($months != 0) && ($balance > 0.01)) {
 						$interest = $balance * $pclass['interest'] / (100.0 * 12);
 						$new_balance = $balance + $interest + $monthly_fee;
-
 						if ($minimum_payment >= $new_balance || $payment >= $new_balance) {
 							$pay_data[] = $new_balance;
 							break;
 						}
-
 						$new_payment = max($payment, $minimum_payment);
 						
 						if ($base) {
 							$new_payment = max($new_payment, $balance / 24.0 + $monthly_fee + $interest);
 						}
-
 						$balance = $new_balance - $new_payment;
 						
 						$pay_data[] = $new_payment;
 							   
 						$months -= 1;
 					}
-
 					$monthly_cost = round(isset($pay_data[0]) ? ($pay_data[0]) : 0, 2);
-
 					if ($monthly_cost < 0.01) {
 						continue;
 					}
-
 					if ($pclass['Type'] == 1 && $monthly_cost < $lowest_payment) {
 						$monthly_cost = $lowest_payment;
 					}
-
 					if ($pclass['Type'] == 0 && $monthly_cost < $lowest_payment) {
 						continue;
 					}
@@ -552,7 +509,6 @@ function sprintf(){var e=/%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\
     width: 100%;
     font-family:"Helvetica Neue",Arial,Helvetica,"Nimbus Sans L",sans-serif;
 }
-
 .billmate_partpayment input[type=text]{
     margin:0px!important;
     width:168px;
@@ -581,7 +537,6 @@ Object.keys = Object.keys || function(o) {
     }  
     return result;  
 };
-
 if ( !Array.prototype.forEach ) {
   Array.prototype.forEach = function(fn, scope) {
     for(var i = 0, len = this.length; i < len; ++i) {   
@@ -609,7 +564,6 @@ $ = jQuery;
 				jQuery(".confirmlabel").html(sprintf(confirmemailText, jQuery("#email").val().trim()));
 			});
 			jQuery(".confirmlabel").html(sprintf(confirmemailText, jQuery("#email").val().trim()));
-
             jQuery.getScript("https://efinance.se/billmate/base.js", function(){
                     window.$=jQuery;
 		            jQuery("#terms-delbetalning").Terms("villkor_delbetalning",{eid: '.$this->settings['eid'].',effectiverate:34});
@@ -655,10 +609,8 @@ jQuery(document).ready(function(){
 });</script>';
 		return $tag;
 	}
-
 	function process () {
 		global $Shopp;
-
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
 		
@@ -672,18 +624,14 @@ jQuery(document).ready(function(){
 		
         $eid  = (int)$this->settings['eid'] ;
         $key = $this->settings['secretkey'];
-
-
 		$ssl = true;
 		$debug = false;
 		$k = new BillMate($eid,$key,$ssl,$debug, $this->settings['testmode'] == 'on');
-
 		$Customer = $this->Order->Customer;
 		$Billing = $this->Order->Billing;
 		$Shipping = $this->Order->Shipping;
 		$country = $zone = $locale = $global = false;
         $country = $Billing->country;
-
 		$country_to_currency = array(
 			'NO' => 'NOK',
 			'SE' => 'SEK',
@@ -692,9 +640,7 @@ jQuery(document).ready(function(){
 			'DE' => 'EUR',
 			'NL' => 'EUR',
 		);
-
 		$ship_address = $bill_address = array();
-
         $countryData = BillmateCountry::getCountryData($Shipping->country);
 		
 	    $ship_address = array(
@@ -727,7 +673,6 @@ jQuery(document).ready(function(){
 		    'city'            => $Billing->city,
 		    'country'         => $countryData['country'],
 	    );
-
        foreach($ship_address as $key => $col ){
             $ship_address[$key] = utf8_decode(Encoding::fixUTF8( $col ));
         }
@@ -742,7 +687,6 @@ jQuery(document).ready(function(){
         $goods_list = array();
         foreach($this->Order->Cart->contents as $item) {
             // echo links for the items
-
             $flag = stripos( $item->name, 'billmate fee' ) === false ?
                     (stripos( $item->name, 'billmate invoice fee' ) === false? 0 : 16) : 0; 
 	        $goods_list[] = array(
@@ -755,11 +699,9 @@ jQuery(document).ready(function(){
 			        'discount' => 0.0,
 			        'flags'    => $flag,
 		        )
-
 	        );
 			$taxrate = $item->taxrate;
         }
-
 		if( $this->Order->Cart->Totals->discount > 0 ){
             $rate = (100+ ($taxrate*100))/100;
             $totalAmt = $this->Order->Cart->Totals->discount;
@@ -772,21 +714,18 @@ jQuery(document).ready(function(){
 			        'artno'    => __('discount','shopp-billmate-partpayment'),
 			        'title'    => __('Discount','shopp-billmate-partpayment'),
 			        'price'    => -1 * abs( round($this->Order->Cart->Totals->discount *100,0) ),
-			        'vat'      => $taxrate*100,
+			        'vat'      =>  $taxrate*100,
 			        'discount' => 0,
 			        'flags'    => $flag,
 		        )
 	        );
 		}
-
         if(!empty($this->Order->Cart->Totals->shipping)){
             $taxrate = $taxrate * 100;
             //$rate = (100+$taxrate)/100;
             $totalAmt = $this->Order->Cart->Totals->shipping;
             //$price = $totalAmt-($totalAmt/$rate);
            // $shipping = $totalAmt - $price;
-
-
 	        $goods_list[] = array(
 		        'qty'   => (int)1,
 		        'goods' => array(
@@ -810,7 +749,6 @@ jQuery(document).ready(function(){
 			"currency"=>$currency,
 			"country"=>$country,
 			"language"=>$language,
-
 			"pclass"=>$pclass,
 			"shipInfo"=>array("delay_adjust"=>"1"),
 			"travelInfo"=>array(),
@@ -828,7 +766,6 @@ jQuery(document).ready(function(){
         $this->Order->pclass = false;
 		if(!is_array($result1))
 		{   
-
 			new ShoppError(__('It is not possible to pay with that method and to choose a different payment method or use a different personal number','shopp-billmate-partpayment'),'billmate_error',SHOPP_TRXN_ERR);
 			shopp_redirect(shoppurl(false,'checkout'));
             die;
@@ -854,14 +791,12 @@ jQuery(document).ready(function(){
 			'DK' =>__('Danmark', 'Shopp'),
 			'NO' =>__( 'Norway' ,'Shopp')
 		);
-
 		$this->ui->text(0,array(
 			'name' => 'eid',
 			'value' => $this->settings['eid'],
 			'size' => 7,
 			'label' => __('Enter your EID.','shopp-billmate-partpayment')
 		));
-
 		$this->ui->text(0,array(
 			'name' => 'secretkey',
 			'value' => $this->settings['secretkey'],
@@ -879,23 +814,26 @@ jQuery(document).ready(function(){
 			'multiselect' => 'multiselect',
 			'selected' => $this->settings['avail_country'],
 		),$available);
-
 		$content = file_get_contents(dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json');
 		$data    = json_decode($content );
 		
+		
 		$str = array('<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">');
-		$str[] = '<tr><th style="border:1px solid">Sr.</th><th style="border:1px solid">Description</th><th style="border:1px solid">Months</th><th style="border:1px solid">Start fee</th><th style="border:1px solid">Invoice fee</th><th style="border:1px solid">Interest</th><th style="border:1px solid">Min Total</th><th style="border:1px solid">Country</th><th style="border:1px solid">Type</th><th style="border:1px solid">Expiry</th></tr>';
+		$str[] = '<tr><th style="border:1px solid">Sr.</th><th style="border:1px solid">Description</th><th style="border:1px solid">Months</th><th style="border:1px solid">Start fee</th><th style="border:1px solid">Invoice fee</th><th style="border:1px solid">Interest</th><th style="border:1px solid">Min Total</th><th style="border:1px solid">Country</th><th style="border:1px solid">Type</th><th style="border:1px solid">Expiry</th><th style="border:1px solid">Max Total</th></tr>';
 		$serial = 1;
 		foreach ($data as $pclassobj) {                
-            $pclass = (array)$pclassobj;
-			$str2 = array('<tr style="background:#fff;"><td style="border:1px solid;">'.$serial.'</td>');
-			foreach( $pclass[0] as $key => $col ){
-				if( $key != 'pclassid' )
-				$str2[] = '<td style="border:1px solid">'.$col.'</td>';
-			}
-			$str2[] = '</tr>';
-			$str[] = implode('', $str2 );
-			$serial++;
+            $pclasses = (array)$pclassobj;
+			foreach( $pclasses as $pclass ) :
+				$str2 = array('<tr style="background:#fff;"><td style="border:1px solid;">'.$serial.'</td>');
+				foreach( $pclass as $key => $col ){
+					if( $key != 'pclassid' )
+					$str2[] = '<td style="border:1px solid">'.$col.'</td>';
+				}
+				$str2[] = '</tr>';
+				$str[] = implode('', $str2 );
+				$serial++; 
+			endforeach;
+			break;			
 		}
 		$str[] = '</table>';
 		$content = '<div style="background-color: #dfdfdf;width: auto;z-index: 99999;padding: 0px;border: 13px solid grey;">'.implode('', $str ).'</div>';
@@ -905,7 +843,5 @@ jQuery(document).ready(function(){
 			'content' => $content
 		));
 	}
-
 } // END class BillmateInvoice
-
 ?>
