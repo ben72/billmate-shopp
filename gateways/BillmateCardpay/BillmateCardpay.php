@@ -114,7 +114,7 @@ class BillmateCardpay extends GatewayFramework implements GatewayModule {
 	}
 
 	function submit ($tag=false,$options=array(),$attrs=array()) {
-		$tag[$this->settings['label']] =  '<span class="billmate_cardpay"><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/'.($this->module).'/bm_kort_l.png"/></span><span>'.__(' Visa & MasterCard','shopp-billmate-cardpay').'</span><input type="image" name="process" src="'.content_url().'/shopp-addons/'.($this->module).'/betala_kort_knapp.gif" id="checkout-button" '.inputattrs($options,$attrs).' /></span><style type="text/css">
+		$tag[$this->settings['label']] =  '<span class="billmate_cardpay"><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/gateways/'.($this->module).'/bm_kort_l.png"/></span><span>'.__(' Visa & MasterCard','shopp-billmate-cardpay').'</span><input type="image" name="process" src="'.content_url().'/shopp-addons/gateways/'.($this->module).'/betala_kort_knapp.gif" id="checkout-button" '.inputattrs($options,$attrs).' /></span><style type="text/css">
 .billmate_cardpay b,.billmate_cardpay span{
     color:#888888!important
 }

@@ -109,7 +109,7 @@ class BillmateBank extends GatewayFramework implements GatewayModule {
 	}
 
 	function submit ($tag=false,$options=array(),$attrs=array()) {
-		$tag[$this->settings['label']] =  '<span class="billmate_bank"><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/'.($this->module).'/billmate_bank_s.png"/></span><span>'.__('pay by Bank Transfer','shopp-billmate-bank').'</span><input type="image" name="process" src="'.content_url().'/shopp-addons/'.($this->module).'/betala_bank_knapp.gif" id="checkout-button" '.inputattrs($options,$attrs).' /></span><style type="text/css">
+		$tag[$this->settings['label']] =  '<span class="billmate_bank"><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/gateways/'.($this->module).'/billmate_bank_s.png"/></span><span>'.__('pay by Bank Transfer','shopp-billmate-bank').'</span><input type="image" name="process" src="'.content_url().'/shopp-addons/gateways/'.($this->module).'/betala_bank_knapp.gif" id="checkout-button" '.inputattrs($options,$attrs).' /></span><style type="text/css">
 .billmate_bank b,.billmate_bank span{
     color:#888888!important
 }
