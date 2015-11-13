@@ -11,11 +11,11 @@
  *
  * $Id: BillmatePartpayment.php 1390 2010-09-27 18:43:12Z jdillick $
  **/
-if(!file_exists( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php" )){
+if(!file_exists( SHOPP_ADDONS."/BillmateCore/lib/utf8.php" )){
     die("Billmate Core is Required to enable this gateway");
 }
-include_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php");
-require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
+include_once( SHOPP_ADDONS."/BillmateCore/lib/utf8.php");
+require_once( SHOPP_ADDONS."/BillmateCore/commonfunctions.php");
 load_plugin_textdomain('shopp-billmate-partpayment', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 class BillmatePartpayment extends GatewayFramework implements GatewayModule {
     var $countries = array(209 =>'sweden', 73=> 'finland',59=> 'denmark', 164 => 'norway', 81 => 'germany' );
@@ -37,9 +37,9 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	}
 	function success($Purchase){
 		if(  $Purchase->id ){
-			require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-			include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-			include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+			require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+			include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+			include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 			
 			$pno = '';
 			
@@ -100,9 +100,9 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	    global $Shopp;
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
-		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+		require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 		
 		$pno = $this->Order->partpaymentpno;
 		$phone = $this->Order->partpaymentphone;
@@ -290,9 +290,9 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 		
 	    $ssl = true;
 	    $debug = false;
-		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+		require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
         $k = new BillMate($eid,$secret,$ssl,$debug, $this->settings['testmode'] == 'on');
         $result = array();
         foreach($this->countries as $countryid => $countryname ){
@@ -309,9 +309,9 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
     	    echo '<div class="wrap shopp"><div class="error"><p>' , _e('Unable to fetch Billmate Pclasses','shopp-billmate-partpayment'),'</p></div></div>';
         }else{
             $pclases = json_encode($result, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-            $fp = fopen(dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json', 'w+');
+            $fp = fopen(SHOPP_ADDONS.'/BillmateCore/billmatepclasses.json', 'w+');
             if( !$fp ){
-        	    echo '<div class="wrap shopp"><div class="error"><p>' , _e('Unable to open file to write.'.dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json','shopp-billmate-partpayment'),'</p></div></div>';
+        	    echo '<div class="wrap shopp"><div class="error"><p>' , _e('Unable to open file to write.'.SHOPP_ADDONS.'/BillmateCore/billmatepclasses.json','shopp-billmate-partpayment'),'</p></div></div>';
         	    return true;
             }
             fwrite($fp, $pclases );
@@ -472,7 +472,7 @@ class BillmatePartpayment extends GatewayFramework implements GatewayModule {
 	function submit ($tag=false,$options=array(),$attrs=array()) {
 	    global $Shopp;
 	    $Billing = $this->Order->Billing;
-		$content = file_get_contents(dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json');
+		$content = file_get_contents(SHOPP_ADDONS.'/BillmateCore/billmatepclasses.json');
 		$data    = json_decode($content );
 		$data2   = array();
 		foreach( $data as $key => $col ){
@@ -486,7 +486,7 @@ function sprintf(){var e=/%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\
 <?php
 //		foreach($this->Order->payoptions as );
 		$content = json_encode($data2, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-		$tag[$this->settings['label']] =  '<span class="billmate_partpayment"><span class="col1"><b>'.__('Invoice Information','shopp-billmate-partpayment').'</b><input type="text" id="pno" name="billmatepartpayment[pno]" class="required" value="'.$this->Order->partpaymentpno.'" /><label for="pno">'.__('Personal Number', 'shopp-billmate-partpayment').'</label></span><span class="col2" style="width:134px"><img src="'.SHOPP_PLUGINURI.'/gateways'.'/'.($this->module).'/images/bm_delbetalning_l.png"/></span><span style="width: 178px;height:99px;"><span style="padding: 0 !important;width: 264px;">'.__('Billmate Part Payment - Pay from','shopp-billmate-partpayment').' <span id="billmate_partpayment_price"></span>kr/'.__('month','shopp-billmate-partpayment').'</span><span><a id="terms-delbetalning">'.__('Terms of invoice','shopp-billmate-partpayment').'</a></span><input type="text" style="left:-999999px;position:absolute!important;" class="required" name="pclass" id="pclass" /></span><span style="min-width:425px;max-width: 480px;padding-right:none;"><input type="checkbox" checked="checked" name="billmatepartpayment[phone]" id="billmatepartphone" class="required" value="on" style="float: none;"><label for="billmatepartphone" style="float: right;width:95%" class="confirmlabel">'.__('My email address is correct and can be used for invoicing purposes.', 'shopp-billmate-invoice').'</label></span><input  type="image" src="'.SHOPP_PLUGINURI.'/gateways/BillmatePartpayment/images/betala_delbetalning_knapp.gif" class="checkout-button" value="Submit Order" id="checkout-button" name="process"></span><style type="text/css">
+		$tag[$this->settings['label']] =  '<span class="billmate_partpayment"><span class="col1"><b>'.__('Invoice Information','shopp-billmate-partpayment').'</b><input type="text" id="pno" name="billmatepartpayment[pno]" class="required" value="'.$this->Order->partpaymentpno.'" /><label for="pno">'.__('Personal Number', 'shopp-billmate-partpayment').'</label></span><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/'.($this->module).'/images/bm_delbetalning_l.png"/></span><span style="width: 178px;height:99px;"><span style="padding: 0 !important;width: 264px;">'.__('Billmate Part Payment - Pay from','shopp-billmate-partpayment').' <span id="billmate_partpayment_price"></span>kr/'.__('month','shopp-billmate-partpayment').'</span><span><a id="terms-delbetalning">'.__('Terms of invoice','shopp-billmate-partpayment').'</a></span><input type="text" style="left:-999999px;position:absolute!important;" class="required" name="pclass" id="pclass" /></span><span style="min-width:425px;max-width: 480px;padding-right:none;"><input type="checkbox" checked="checked" name="billmatepartpayment[phone]" id="billmatepartphone" class="required" value="on" style="float: none;"><label for="billmatepartphone" style="float: right;width:95%" class="confirmlabel">'.__('My email address is correct and can be used for invoicing purposes.', 'shopp-billmate-invoice').'</label></span><input  type="image" src="'.content_url().'/shopp-addons/BillmatePartpayment/images/betala_delbetalning_knapp.gif" class="checkout-button" value="Submit Order" id="checkout-button" name="process"></span><style type="text/css">
 		.billmate_partpayment label{
             font-size: 11px!important;
             font-weight: normal!important;
@@ -614,9 +614,9 @@ jQuery(document).ready(function(){
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
 		
-		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+		require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 		
 		$pno = $this->Order->partpaymentpno;
         
@@ -814,7 +814,7 @@ jQuery(document).ready(function(){
 			'multiselect' => 'multiselect',
 			'selected' => $this->settings['avail_country'],
 		),$available);
-		$content = file_get_contents(dirname( SHOPP_GATEWAYS ).'/BillmateCore/billmatepclasses.json');
+		$content = file_get_contents(SHOPP_ADDONS.'/BillmateCore/billmatepclasses.json');
 		$data    = json_decode($content );
 		
 		

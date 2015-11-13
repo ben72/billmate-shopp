@@ -12,8 +12,8 @@
  *
  * $Id: BillmateInvoice.php 1390 2010-09-27 18:43:12Z jdillick $
  **/
-include_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/utf8.php");
-require_once( dirname( SHOPP_GATEWAYS )."/BillmateCore/commonfunctions.php");
+include_once( SHOPP_ADDONS."/BillmateCore/lib/utf8.php");
+require_once( SHOPP_ADDONS."/BillmateCore/commonfunctions.php");
 load_plugin_textdomain('shopp-billmate-invoice', FALSE, dirname(plugin_basename(__FILE__)).'/languages/');
 
 class BillmateInvoice extends GatewayFramework implements GatewayModule {
@@ -37,9 +37,9 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 	}
 	function success($Purchase){
 		if(  $Purchase->id ){
-			require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-			include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-			include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+			require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+			include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+			include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 			
 			$pno = '';
 			
@@ -113,9 +113,9 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
 
-		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+		require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 		
 		$pno = $this->Order->pno;
 
@@ -336,7 +336,7 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
 	}
 	function remove_fee(){
 		global $Shopp;
-		$cart = $Shopp->Shopping->data->Order->Cart;
+		$cart = $Shopp->Order->Cart;
 		if( !empty($this->settings['invoice_fee'])){
 			$Product = new Product($this->settings['invoice_fee']);
 			$price   = new Price($this->settings['invoice_fee'], 'product');
@@ -364,7 +364,7 @@ function sprintf(){var e=/%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\
 </script>
 <?php
 
-		$tag[$this->settings['label']] =  '<span class="billmate_invoice"><span class="col1"><b>'.__('Invoice Information','shopp-billmate-invoice').'</b><input type="text" id="pno" name="billmate[pno]" class="required" value="'.$this->Order->pno.'" /><label for="pno">'.__('Personal Number', 'shopp-billmate-invoice').'</label></span><span class="col2" style="width:134px"><img src="'.SHOPP_PLUGINURI.'/gateways'.'/'.($this->module).'/images/bm_faktura_l.png"/></span><span style="width: 178px;height:99px;"><span style="padding: 0 !important;width: 264px;">'.__('Billmate Invoice - Pay in 14 days','shopp-billmate-invoice').'</span><span><a id="terms">'.__('Terms of invoice','shopp-billmate-invoice').'</a></span></span><span style="min-width:425px;max-width: 480px;padding-right:none;"><input type="checkbox" checked="checked" name="billmate[phone]" id="billmatephone" class="required" value="on" style="float: none;"><label for="billmatephone" style="float: right;width:95%" class="confirmlabel">'.__('My email address is correct and can be used for invoicing purposes.', 'shopp-billmate-invoice').'</label></span><input type="image" src="'.SHOPP_PLUGINURI.'/gateways/BillmateInvoice/images/betala_knapp.gif" class="checkout-button" value="Submit Order" id="checkout-button" name="process"></span><style type="text/css">
+		$tag[$this->settings['label']] =  '<span class="billmate_invoice"><span class="col1"><b>'.__('Invoice Information','shopp-billmate-invoice').'</b><input type="text" id="pno" name="billmate[pno]" class="required" value="'.$this->Order->pno.'" /><label for="pno">'.__('Personal Number', 'shopp-billmate-invoice').'</label></span><span class="col2" style="width:134px"><img src="'.content_url().'/shopp-addons/'.($this->module).'/images/bm_faktura_l.png"/></span><span style="width: 178px;height:99px;"><span style="padding: 0 !important;width: 264px;">'.__('Billmate Invoice - Pay in 14 days','shopp-billmate-invoice').'</span><span><a id="terms">'.__('Terms of invoice','shopp-billmate-invoice').'</a></span></span><span style="min-width:425px;max-width: 480px;padding-right:none;"><input type="checkbox" checked="checked" name="billmate[phone]" id="billmatephone" class="required" value="on" style="float: none;"><label for="billmatephone" style="float: right;width:95%" class="confirmlabel">'.__('My email address is correct and can be used for invoicing purposes.', 'shopp-billmate-invoice').'</label></span><input type="image" src="'.content_url().'/shopp-addons/BillmateInvoice/images/betala_knapp.gif" class="checkout-button" value="Submit Order" id="checkout-button" name="process"></span><style type="text/css">
 		.billmate_invoice label{
             font-size: 11px!important;
             font-weight: normal!important;
@@ -463,9 +463,9 @@ jQuery(document).ready(function(){
 		$Shopping = &$Shopp->Shopping;
 		$Order = &$Shopp->Order;
 		
-		require_once dirname( SHOPP_GATEWAYS ).'/BillmateCore/BillMate.php';
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpc.inc");
-		include_once(dirname( SHOPP_GATEWAYS )."/BillmateCore/lib/xmlrpcs.inc");
+		require_once SHOPP_ADDONS.'/BillmateCore/BillMate.php';
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpc.inc");
+		include_once(SHOPP_ADDONS."/BillmateCore/lib/xmlrpcs.inc");
 		
 		$pno = $this->Order->pno;
         
