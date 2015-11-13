@@ -2,7 +2,7 @@
 add_action('wp_footer','get_billmate_version');
 function get_billmate_version(){
 	if(!empty($_GET['debug-bill'])){
-	echo '<h1> billmate version 1.15 </h1>';
+	echo '<h1> billmate version 1.16 </h1>';
 		
 		phpinfo();
 		die;

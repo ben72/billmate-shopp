@@ -1,6 +1,6 @@
 <?php
 if(!function_exists('getCountryID')){
-	define('BILLPLUGIN_VERSION','1.15');
+	define('BILLPLUGIN_VERSION','1.16');
 	define('BILLMATE_VERSION',  "PHP:Shopp:".BILLPLUGIN_VERSION );
 
 	function getCountryID(){
