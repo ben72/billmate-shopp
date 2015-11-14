@@ -357,7 +357,7 @@ EOD;
 
 
 
-        foreach($this->Order->Cart->contents as $item) {
+        foreach($this->Order->Cart as $item) {
             // echo links for the items
             $flag = stripos( $item->name, 'billmate fee' ) === false ?
                     (stripos( $item->name, 'billmate invoice fee' ) === false? 0 : 16) : 0; 
