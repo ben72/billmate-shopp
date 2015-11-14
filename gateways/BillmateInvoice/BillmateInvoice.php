@@ -179,15 +179,15 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
             $price   = new Price($this->settings['invoice_fee'], 'product');
             $NewItem = new Item($Product,$Price,array(),array(),false);
             if(empty($this->Order->feeadded) || !$this->Order->feeadded) {
-        		$Shopp->Shopping->data->Order->Cart->add(1,$Product, $price->id );
-        		$Shopp->Shopping->data->Order->Cart->totals();
+        		$Shopp->Order->Cart->add(1,$Product, $price->id );
+        		$Shopp->Order->Cart->totals();
                 $this->Order->feeadded = true;
             }
         }
 		
     	$Customer = $this->Order->Customer;
-		$Billing =  $Shopp->Shopping->data->Order->Billing;
-		$Shipping = $Shopp->Shopping->data->Order->Shipping;
+		$Billing =  $Shopp->Order->Billing;
+		$Shipping = $Shopp->Order->Shipping;
         foreach($addr[0] as $key => $col ){
             $addr[0][$key] = (Encoding::fixUTF8( $col ));
         }
@@ -287,11 +287,11 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
                 die;
 	        }else{
 				if( empty( $addr[0][0] ) ){
-					$Shopp->Shopping->data->Order->Customer->company = $addr[0][1];
+					$Shopp->Order->Customer->company = $addr[0][1];
 				}else{
-					$Shopp->Shopping->data->Order->Customer->firstname = $addr[0][0];
-					$Shopp->Shopping->data->Order->Customer->lastname = $addr[0][1];
-					$Shopp->Shopping->data->Order->Customer->company = '';
+					$Shopp->Order->Customer->firstname = $addr[0][0];
+					$Shopp->Order->Customer->lastname = $addr[0][1];
+					$Shopp->Order->Customer->company = '';
 				}
                 $Shipping->address  = $addr[0][2];
                 $Shipping->postcode = $addr[0][3];
@@ -303,8 +303,8 @@ class BillmateInvoice extends GatewayFramework implements GatewayModule {
                 $Billing->city     = $addr[0][4];
                 $Billing->country  = BillmateCountry::getCode($addr[0][5]);
                 
-                $Shopp->Shopping->data->Order->Billing  =  $Billing ;
-                $Shopp->Shopping->data->Order->Shipping =  $Shipping ;
+                $Shopp->Order->Billing  =  $Billing ;
+                $Shopp->Order->Shipping =  $Shipping ;
 	        }
         }
 		return false;
@@ -540,14 +540,14 @@ jQuery(document).ready(function(){
 		
         $goods_list = array();
         $taxrate = 0;
-        if( sizeof( $this->Order->Cart->contents ) <= 1 && !empty($this->settings['invoice_fee'])){
-            $Shopp->Shopping->data->Order->Cart->contents = array();
+        if( sizeof( $this->Order->Cart ) <= 1 && !empty($this->settings['invoice_fee'])){
+            $Shopp->Order->Cart = array();
 	        new ShoppError( __('Cart is empty', 'shopp-billmate-invoice'), 2);
 	        $this->Order->feeadded = false;
 	        echo '<script type="text/javascript">window.location.href="'.shoppurl(false,'cart').'";</script>';
 	        die;            
         }
-        foreach($this->Order->Cart->contents as $item) {
+        foreach($this->Order->Cart as $item) {
             // echo links for the items
            
             $flag = stripos( $item->name, 'billmate fee' ) === false ?
@@ -629,8 +629,8 @@ jQuery(document).ready(function(){
 			$this->remove_fee();
 /*
 			if( !empty($this->settings['invoice_fee'])){
-				$Shopp->Shopping->data->Order->Cart->remove(sizeof( $this->Order->Cart->contents )-1);
-				$Shopp->Shopping->data->Order->Cart->totals();
+				$Shopp->Order->Cart->remove(sizeof( $this->Order->Cart )-1);
+				$Shopp->Order->Cart->totals();
 				$this->Order->feeadded = false;
 				unset($this->Order->feeadded);
 			}
